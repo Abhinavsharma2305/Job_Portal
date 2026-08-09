@@ -29,3 +29,18 @@ Counselix is a comprehensive full-stack counselling platform designed for JEE Ma
 | **DevOps & CI/CD** | GitHub Actions, Render/Heroku (Backend), Vercel/Netlify (Frontend) |
 
 ---
+
+## 🗄️ Database Schemas (MongoDB Collections)
+
+1. **`users`**: Student profiles, JEE Main/Adv ranks, category, home state, 12th marks, saved colleges, choice list.
+2. **`colleges`**: Meta info for IITs, NITs, IIITs, GFTIs, location, NIRF ranks, website.
+3. **`programs`**: Academic programs offered by colleges (Degree, Branch, Duration).
+4. **`cutoffs`**: Historical cutoff records (Year, Round, Category, Quota, Gender, Opening Rank, Closing Rank).
+5. **`fees`**: Tuition, hostel, mess, and total annual expenses per program.
+6. **`placements`**: Average, median, highest packages, and placement percentage stats.
+7. **`scholarships`**: Government and institute scholarship eligibility rules and amounts.
+8. **`choices`**: User generated preference priority lists.
+9. **`sources`**: Audit log of data provenance (Source Name, URL, DataType, Last Updated).
+
+---
+
