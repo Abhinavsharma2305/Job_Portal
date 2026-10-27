@@ -21,7 +21,6 @@ const useGetAllJobs = () => {
             withCredentials: true,
           }
         );
-        console.log("API Response:", res.data);
         if (res.data.status) {
           // Updated success check
           dispatch(setAllJobs(res.data.jobs));
@@ -37,7 +36,7 @@ const useGetAllJobs = () => {
     };
 
     fetchAllJobs();
-  }, [dispatch]);
+  }, [dispatch, searchedQuery]);
 
   return { loading, error };
 };
