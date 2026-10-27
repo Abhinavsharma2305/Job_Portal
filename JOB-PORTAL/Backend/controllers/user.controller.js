@@ -13,14 +13,19 @@ export const register = async (req, res) => {
     const { fullname, email, phoneNumber, password, role, termsAcceptedAt } = req.body;
 
     if (!fullname || !email || !phoneNumber || !password || !role) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "Missing required fields",
         success: false,
       });
     }
-    const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content)
+
+    // Enforce minimum password length
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters",
+        success: false,
+      });
+    }
 
     const user = await User.findOne({ email });
     if (user) {
@@ -29,6 +34,15 @@ export const register = async (req, res) => {
         success: false,
       });
     }
+
+    // Upload profile photo only if a file was provided
+    let profilePhotoUrl = "";
+    if (req.file) {
+      const fileUri = getDataUri(req.file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      profilePhotoUrl = cloudResponse?.secure_url || "";
+    }
+
     //convert passwords to hashes
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -46,9 +60,9 @@ export const register = async (req, res) => {
       isVerified: false,
       otp,
       otpExpiry,
-      profile:{
-        profilePhoto: cloudResponse?.secure_url || "",
-      }
+      profile: {
+        profilePhoto: profilePhotoUrl,
+      },
     });
 
     await newUser.save();
@@ -65,7 +79,7 @@ export const register = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
+    return res.status(201).json({
       message: "OTP sent to your email. Please verify to continue.",
       email,
       success: true,
@@ -277,21 +291,21 @@ export const login = async (req, res) => {
     const { email, password, role } = req.body;
 
     if (!email || !password || !role) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "Missing required fields",
         success: false,
       });
     }
     let user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
+      return res.status(401).json({
         message: "Incorrect email or password",
         success: false,
       });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(404).json({
+      return res.status(401).json({
         message: "Incorrect email or password",
         success: false,
       });
@@ -366,9 +380,6 @@ export const logout = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    console.log('Uploaded file:', req.file);
-    console.log('Request body:', req.body);
-
     const { fullname, email, phoneNumber, bio, skills, resume } = req.body;  
     const file = req.file;
 
