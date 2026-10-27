@@ -4,7 +4,7 @@ A full-stack MERN Job Portal built as a college team project.
 
 **Team**: Abhinav Sharma · Abhay · Akshat  
 **Repository**: https://github.com/Abhinavsharma2305/Job_Portal  
-**Reference Project**: https://github.com/ankitpathak62/JOB-PORTAL (by Ankit Pathak — used as starting reference)
+
 
 ## Project Location
 
